@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Validator;
 
 class RequestController extends Controller
 {
@@ -25,8 +26,11 @@ class RequestController extends Controller
     public function calculateFibonacci(Request $request)
     {
         $data = $request->all();
-        if (!isset($data['number'])) {
-            return response(['error' => 'need number for calculate'], 400);
+        $validator = Validator::make($data, [
+            'number' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response(['result' => $validator->messages()], 400);
         }
         return response(['result' => Helper::getFibonacci($data['number'])]);
     }
@@ -34,8 +38,13 @@ class RequestController extends Controller
     public function getDnsFields(Request $request)
     {
         $data = $request->all();
-        if (!isset($data['domain']) || !isset($data['type'])) {
-            return response(['error' => 'need domain and type for get dns fields'], 400);
+        $validator = Validator::make($data, [
+            'domain' => 'required',
+            'type' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['result' => $validator->messages()], 400);
         }
 
         try {
@@ -46,16 +55,10 @@ class RequestController extends Controller
                     'query' => "name={$data['domain']}&type={$data['type']}&cd=true&do=true",
                 ]
             );
-
-            return response(json_decode($response->getBody(), true));
+            return response(['result' => json_decode($response->getBody(), true)]);
         } catch (ClientException $e) {
 
-            return response('Something wrong google service', $e->getCode());
+            return response(['result' => 'Something wrong google service'], $e->getCode());
         }
     }
-
-
-    //Делает внутри контроллера запрос на получение значения DNS записи с https://dns
-    //.google/resolve?name={{domain}}&type={{type}}&cd=true&do=true для
-    //переданных значений domain и type .
 }
