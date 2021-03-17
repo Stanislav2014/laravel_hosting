@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Livewire\Auth\Login;
@@ -53,4 +54,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', LogoutController::class)
         ->name('logout');
+
+    Route::get('/admin/log', [AdminController::class, 'log'])
+        ->name('admin.log');
+
+    Route::delete('/admin/log/clear', [AdminController::class, 'logClear'])
+        ->name('admin.log.clear');
 });

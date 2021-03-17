@@ -22,6 +22,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('request.logging')->group(function() {
     Route::post('/fibonacci', [RequestApi::class, 'calculateFibonacci'])
         ->name('fibonacci');
-    Route::post('/dns', [RequestApi::class, 'calculateFibonacci'])
+    Route::post('/dns', [RequestApi::class, 'getDnsFields'])
         ->name('dns');
 });

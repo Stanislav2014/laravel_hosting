@@ -24,12 +24,12 @@ class RequestLogging
     public function terminate(Request $request, Response $response)
     {
         $dataRequest = $request->all();
-        $dataResponse = $response;
+        $dataResponse = $response->content();
         Log::create([
                 'endpoint' => $request->path(),
                 'verb' => $request->method(),
                 'request' => json_encode($dataRequest),
-                'response' => json_encode($dataResponse)
+                'response' => $dataResponse
             ]
         );
     }

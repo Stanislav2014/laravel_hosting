@@ -12,9 +12,4 @@ class Log extends Model
     protected $fillable = [
         'endpoint', 'verb', 'request', 'response'
     ];
-
-    protected $casts = [
-        'request' => 'json',
-        'response' => 'json'
-    ];
 }
